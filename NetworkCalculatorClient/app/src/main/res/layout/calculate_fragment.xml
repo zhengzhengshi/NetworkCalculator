@@ -8,17 +8,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Input expression:" />
+            android:text="Input expression:"
+            android:textSize="@dimen/TextSize1" />
 
         <EditText
             android:id="@+id/send_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/TextSize1" />
     </LinearLayout>
 
     <LinearLayout
@@ -31,17 +34,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="calculate" />
+            android:text="calculate"
+            android:textSize="@dimen/TextSize1" />
 
         <Button
             android:id="@+id/disconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="disconnect" />
+            android:text="disconnect"
+            android:textSize="@dimen/TextSize1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calculate state:"
+            android:textSize="@dimen/TextSize1" />
+
+        <TextView
+            android:id="@+id/message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/TextSize1" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calculate result:"
+        android:textSize="@dimen/TextSize1" />
+
+    <com.zzs.networkcalculatorclient.ExpressionView
+        android:id="@+id/result_text"
+        android:layout_marginStart="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

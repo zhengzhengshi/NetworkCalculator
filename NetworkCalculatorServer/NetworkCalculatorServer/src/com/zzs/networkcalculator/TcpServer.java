@@ -1,22 +1,10 @@
 package com.zzs.networkcalculator;
 
 import java.io.BufferedReader;
-<<<<<<< 373090c48b13a4b6987175e841b92e591480cd2a
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.concurrent.Executor;
-=======
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
->>>>>>> 1.Change client to MVP pattern.
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.net.InetAddress;
@@ -24,10 +12,6 @@ import java.net.Inet4Address;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-<<<<<<< 373090c48b13a4b6987175e841b92e591480cd2a
-import java.net.UnknownHostException;
-=======
->>>>>>> 1.Change client to MVP pattern.
 
 public class TcpServer {
 	private static final int PORT = 9999;
@@ -67,6 +51,7 @@ public class TcpServer {
 		private String mMessageText;
 		private String mCalculateResult;
 		private String mClientAdress;
+		private StackCalculators mStackCalculators;
 
 		public ServiceRunable(Socket socket) {
 			this.mSocket = socket;
@@ -80,7 +65,7 @@ public class TcpServer {
 				mObjectOutputStream.flush();
 				mClientAdress = mSocket.getInetAddress().getHostAddress();
 				System.out.println(mClientAdress + ":Connect to server success");
-
+				mStackCalculators = new StackCalculators();
 				mBufferedReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(), "UTF-8"));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -97,8 +82,6 @@ public class TcpServer {
 							mMessageText = "Disconnect success";
 							mCalculateResult = "";
 							System.out.println(mClientAdress + ":" + mMessageText);
-<<<<<<< 373090c48b13a4b6987175e841b92e591480cd2a
-=======
 							mResultData = new ResultData(mMessageType, mMessageText, mCalculateResult);
 							mObjectOutputStream.writeObject(mResultData);
 							mObjectOutputStream.flush();
@@ -106,7 +89,6 @@ public class TcpServer {
 							mBufferedReader.close();
 							mObjectOutputStream.close();
 							break;
->>>>>>> 1.Change client to MVP pattern.
 						} else {
 							System.out.println(mClientAdress + ":receiveMsg:" + mReceiveMsg);
 							if (!"".equals(Utils.checkInput(mReceiveMsg))) {
@@ -117,20 +99,13 @@ public class TcpServer {
 							} else {
 								mMessageType = Constants.MESSAGE_RESULT_SUCCESS;
 								mMessageText = "Calculate success";
-								mCalculateResult = "";
+								mCalculateResult = mStackCalculators.calculate(mReceiveMsg);
 								System.out.println(mClientAdress + ":calculate result:" + mCalculateResult);
 							}
-<<<<<<< 373090c48b13a4b6987175e841b92e591480cd2a
-						}
-						mResultData = new ResultData(mMessageType, mMessageText, mCalculateResult);
-						mObjectOutputStream.writeObject(mResultData);
-						mObjectOutputStream.flush();
-=======
 							mResultData = new ResultData(mMessageType, mMessageText, mCalculateResult);
 							mObjectOutputStream.writeObject(mResultData);
 							mObjectOutputStream.flush();
 						}
->>>>>>> 1.Change client to MVP pattern.
 					}
 				}
 			} catch (Exception e) {

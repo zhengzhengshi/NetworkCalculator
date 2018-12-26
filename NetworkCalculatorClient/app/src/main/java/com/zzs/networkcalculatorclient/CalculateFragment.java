@@ -1,6 +1,8 @@
 package com.zzs.networkcalculatorclient;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,24 +13,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.zzs.networkcalculator.ResultData;
+
 public class CalculateFragment extends Fragment implements View.OnClickListener {
     private EditText mSendContent;
-    private TextView mTextView;
+    private TextView mMessageText;
+    private ExpressionView mResultText;
     private Button mSendBtn;
     private Button mDisconnectBtn;
     private MainPresenter mMainPresenter;
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.calculate_fragment, container,false);
+        View view = inflater.inflate(R.layout.calculate_fragment, container, false);
         initView(view);
         return view;
     }
 
     private void initView(View view) {
         mSendContent = view.findViewById(R.id.send_content);
-        mTextView = view.findViewById(R.id.textView);
+        mMessageText = view.findViewById(R.id.message_text);
+        mResultText = view.findViewById(R.id.result_text);
         mSendBtn = view.findViewById(R.id.send);
         mDisconnectBtn = view.findViewById(R.id.disconnect);
         mSendBtn.setOnClickListener(this);
@@ -54,7 +67,15 @@ public class CalculateFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void showCalculateResult(String receiveMsg) {
-        mTextView.setText(receiveMsg);
+    public void showCalculateResult(final ResultData resultData) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMessageText.setText(resultData.getMessageText());
+                mResultText.setExpression(resultData.getCalculateResult());
+                mResultText.invalidate();
+            }
+        });
+
     }
 }

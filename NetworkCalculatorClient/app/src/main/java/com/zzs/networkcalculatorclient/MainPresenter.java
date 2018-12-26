@@ -28,6 +28,7 @@ public class MainPresenter {
     private ObjectInputStream mObjectInputStream;
     private String mReceiveMsg;
     private int mMessageType;
+    private String mCalculateResult;
     private ResultData mResultData;
 
     private LoginFragment mLoginFragment;
@@ -103,9 +104,7 @@ public class MainPresenter {
             while (true) {
                 try {
                     if ((mResultData = (ResultData) mObjectInputStream.readObject()) != null) {
-                        mReceiveMsg = mResultData.getMessageText();
-                        mMessageType = mResultData.getMessageType();
-                        switch (mMessageType) {
+                        switch (mResultData.getMessageType()) {
                             case MESSAGE_CONNECT_SUCCESS:
                                 updateFragment(mCalculateFragment);
                                 break;
@@ -120,7 +119,7 @@ public class MainPresenter {
                                 break;
                         }
                         if (mCalculateFragment == mFragmentManager.findFragmentById(R.id.content_layout)) {
-                            mCalculateFragment.showCalculateResult(mReceiveMsg);
+                            mCalculateFragment.showCalculateResult(mResultData);
                         }
                     }
                 } catch (ClassNotFoundException e) {
