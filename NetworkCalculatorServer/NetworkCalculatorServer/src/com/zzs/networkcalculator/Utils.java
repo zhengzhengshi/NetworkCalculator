@@ -59,7 +59,6 @@ public class Utils {
         return null;
     }
 
-<<<<<<< 373090c48b13a4b6987175e841b92e591480cd2a
     public static List<Factor> removeCommonFactor(List<Factor> list, int inFactor) {
         List<Factor> newList = new ArrayList<>();
         for (Factor fac : list) {
@@ -68,8 +67,6 @@ public class Utils {
         }
         return newList;
     }
-=======
->>>>>>> 1.Change client to MVP pattern.
 
 
     private static List<Integer> removeCommonSubFactor(List<Integer> list, int inFactor) {
