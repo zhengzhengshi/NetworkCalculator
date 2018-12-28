@@ -77,6 +77,7 @@ public class TcpServer {
 			try {
 				while (true) {
 					if ((mReceiveMsg = mBufferedReader.readLine()) != null) {
+						System.out.println("Receive Message:" + mReceiveMsg);
 						if (mReceiveMsg.equals(Constants.DISCONNECT)) {
 							mMessageType = Constants.MESSAGE_DISCONNECT;
 							mMessageText = "Disconnect success";

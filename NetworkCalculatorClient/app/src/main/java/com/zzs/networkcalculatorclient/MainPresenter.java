@@ -3,6 +3,7 @@ package com.zzs.networkcalculatorclient;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.zzs.networkcalculator.ResultData;
 
@@ -13,6 +14,8 @@ import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,6 +33,9 @@ public class MainPresenter {
     private int mMessageType;
     private String mCalculateResult;
     private ResultData mResultData;
+    private String mServerIp;
+    private int mServerPort;
+    private Timer mTimer;
 
     private LoginFragment mLoginFragment;
     private CalculateFragment mCalculateFragment;
@@ -51,7 +57,9 @@ public class MainPresenter {
     }
 
     public void startConnect(String serverIp, int serverPort) {
-        mExecutorService.execute(new connectService(serverIp, serverPort));
+        this.mServerIp = serverIp;
+        this.mServerPort = serverPort;
+        mExecutorService.execute(new connectService());
     }
 
     public void sendExpression(String expression) {
@@ -77,12 +85,8 @@ public class MainPresenter {
     }
 
     private class connectService implements Runnable {
-        private String mServerIp;
-        private int mServerPort;
 
-        public connectService(String serverIp, int serverPort) {
-            this.mServerIp = serverIp;
-            this.mServerPort = serverPort;
+        public connectService() {
         }
 
         @Override
@@ -92,9 +96,29 @@ public class MainPresenter {
                 mPrintWriter = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(mSocket.getOutputStream(), "UTF-8")), true);
                 mObjectInputStream = new ObjectInputStream(mSocket.getInputStream());
+                mLoginFragment.connectSuccessToast();
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            //TODO 
+                            mSocket.sendUrgentData(0xff);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            updateFragment(mLoginFragment);
+                            //releaseSocket();
+                            //mExecutorService.execute(new connectService());
+                        }
+                    }
+                }, 0, 1);
+
                 receiveMsg();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
+                releaseSocket();
+                mExecutorService.execute(new connectService());
             }
         }
     }
@@ -110,10 +134,7 @@ public class MainPresenter {
                                 break;
                             case MESSAGE_DISCONNECT:
                                 updateFragment(mLoginFragment);
-                                mSocket.close();
-                                mPrintWriter.close();
-                                mObjectInputStream.close();
-                                updateFragment(mLoginFragment);
+                                releaseSocket();
                                 return;
                             default:
                                 break;
@@ -128,6 +149,32 @@ public class MainPresenter {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void releaseSocket() {
+        if (mTimer != null) {
+            mTimer.purge();
+            mTimer.cancel();
+            mTimer = null;
+        }
+        if (mPrintWriter != null) {
+            mPrintWriter.close();
+
+        }
+        if (mObjectInputStream != null) {
+            try {
+                mObjectInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (mSocket != null) {
+            try {
+                mSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

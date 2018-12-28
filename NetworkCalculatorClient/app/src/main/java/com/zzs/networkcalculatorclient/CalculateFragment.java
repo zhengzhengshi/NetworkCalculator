@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zzs.networkcalculator.ResultData;
 
@@ -77,5 +78,28 @@ public class CalculateFragment extends Fragment implements View.OnClickListener 
             }
         });
 
+    }
+    public void connectErrorToast() {
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "connect error, trying to reconnect..", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void connectSuccessToast() {
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "connect success", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
